@@ -1,0 +1,10 @@
+﻿{
+  "senderType": "Monitorist.Pump.GraphiteSender.GraphiteSender",
+  "senderConfiguration": {
+    "server": "graphite.linux.netone.net.tr",
+    "port": 2003,
+    "metricPrefix": "turknet.test",
+    "protocol": "udp",
+    "batchSize": "100"
+  }
+}

@@ -1,0 +1,6 @@
+﻿{
+  "collectorType": "Monitorist.Pump.Collectors.PerformanceCounterCollector",
+  "collectorConfiguration": {
+    "test": "Selman AY"
+  }
+}
