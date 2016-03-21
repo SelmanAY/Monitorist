@@ -1,0 +1,22 @@
+﻿{
+  "templates": [
+    {
+      "name": "Processor"
+    },
+    {
+      "name": "System"
+    },
+    {
+      "name": "Memory"
+    },
+    {
+      "name": "LogicalDisk"
+    },
+    {
+      "name": "Process"
+    },
+    {
+      "name": ".NET CLR Memory"
+    }
+  ]
+}

@@ -10,12 +10,13 @@ namespace Monitorist.Pump.Service
     {
         static void Main()
         {
-            //Senders = new Dictionary<string, Type>();
+            Configuration.TemplateConfig c = new Configuration.TemplateConfig();
+            c.Add("SqlServer", new Configuration.Template { Name = "SqlServer", Poll = 3, IncludedCounters = new List<string>(new string[] { "Memory", "CPU" }) });
+            c.Add("IIS", new Configuration.Template { Name = "IIS", Poll = 3, ExcludedCounters = new List<string>(new string[] { "Memory", "CPU" }) });
+            c.Add("Exchange", new Configuration.Template { Name = "Exchange", Poll = 3, IncludedInstances = new List<string>(new string[] { "Memory", "CPU" }) });
 
-            //LoadAssemblies();
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(c, Newtonsoft.Json.Formatting.Indented);
 
-            //Monitorist.Pump.Core.ISender sender = Activator.CreateInstance(Senders["Monitorist.Pump.GraphiteSender.GraphiteSender"]) as Monitorist.Pump.Core.ISender;
-            
             HostFactory.Run(f => {
                 f.Service<PumpService>();
                 f.SetServiceName("Monitorist.Pump");
