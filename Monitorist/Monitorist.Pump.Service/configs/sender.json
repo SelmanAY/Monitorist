@@ -5,6 +5,44 @@
     "port": 2003,
     "metricPrefix": "turknet.test",
     "protocol": "udp",
-    "batchSize": "100"
+    "batchSize": "100",
+    "transformations": [
+      {
+        "regex": "physicaldisk\\(.* (.*)\\:\\)",
+        "replace": "physicaldisk.#{CAPTUREGROUP}-drive"
+      },
+      {
+        "regex": "^\\\\",
+        "replace": ""
+      },
+      {
+        "regex": "\\\\",
+        "replace": ""
+      },
+      {
+        "regex": "/",
+        "replace": "-"
+      },
+      {
+        "regex": ":",
+        "replace": "."
+      },
+      {
+        "regex": "\\(",
+        "replace": ""
+      },
+      {
+        "regex": "\\.",
+        "replace": ""
+      },
+      {
+        "regex": " ",
+        "replace": ""
+      },
+      {
+        "regex": "%",
+        "replace": ""
+      }
+    ]
   }
 }

@@ -21,7 +21,6 @@ namespace Monitorist.Pump.Service
             this.Collector = CreateCollector();
 
             this.Timer = new System.Threading.Timer(new System.Threading.TimerCallback(Test), null, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10));
-
         }
 
         private void ReadConfigFiles()

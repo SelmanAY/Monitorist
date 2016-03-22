@@ -6,14 +6,6 @@ using System.Threading.Tasks;
 
 namespace Monitorist.Pump.Service.Configuration
 {
-    public class TemplateConfig : Dictionary<string, Template>
-    {
-        public TemplateConfig() : base()
-        {
-
-        }
-    }
-
     public class Template
     {
         public string Name { get; set; }

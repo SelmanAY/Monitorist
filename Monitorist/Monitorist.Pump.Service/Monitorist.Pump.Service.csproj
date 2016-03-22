@@ -64,15 +64,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\CollectorConfig.cs" />
+    <Compile Include="Configuration\Host.cs" />
     <Compile Include="Configuration\SenderConfig.cs" />
     <Compile Include="Configuration\ServiceSettings.cs" />
-    <Compile Include="Configuration\TemplateConfig.cs" />
+    <Compile Include="Configuration\Template.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PumpService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="configs\hosts.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="configs\log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -82,7 +86,9 @@
     <None Include="configs\sender.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="configs\templates.json" />
+    <None Include="configs\templates.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

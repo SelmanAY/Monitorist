@@ -1,22 +1,35 @@
-﻿{
-  "templates": [
-    {
-      "name": "Processor"
-    },
-    {
-      "name": "System"
-    },
-    {
-      "name": "Memory"
-    },
-    {
-      "name": "LogicalDisk"
-    },
-    {
-      "name": "Process"
-    },
-    {
-      "name": ".NET CLR Memory"
-    }
-  ]
-}
+﻿[
+  {
+    "Name": "SqlServer",
+    "Poll": 3,
+    "ExcludedInstances": [ ],
+    "ExcludedCounters": [ ],
+    "IncludedInstances": [ ],
+    "IncludedCounters": [
+      "Memory",
+      "CPU"
+    ]
+  },
+  {
+    "Name": "IIS",
+    "Poll": 3,
+    "ExcludedInstances": [ ],
+    "ExcludedCounters": [
+      "Memory",
+      "CPU"
+    ],
+    "IncludedInstances": [ ],
+    "IncludedCounters": [ ]
+  },
+  {
+    "Name": "Exchange",
+    "Poll": 3,
+    "ExcludedInstances": [ ],
+    "ExcludedCounters": [ ],
+    "IncludedInstances": [
+      "Memory",
+      "CPU"
+    ],
+    "IncludedCounters": [ ]
+  }
+]
