@@ -8,12 +8,13 @@ namespace Monitorist.Pump.Service.Configuration
 {
     class ServiceSettings
     {
+        private Dictionary<string, Template> Templates { get; set; }
+
         public SenderConfig SenderSettings { get; private set; }
         public CollectorConfig CollectorSettings { get; private set; }
-
-        public Dictionary<string, Template> Templates { get; private set; }
-
         public List<Host> Hosts { get; set; }
+
+
 
         private ServiceSettings()
         {

@@ -30,7 +30,7 @@ namespace Monitorist.Pump.Service
                 f.EnableServiceRecovery(src => {
                     src.RestartService(0);
                 });
-
+                
                 // can be helpful if can not reduce time to get up and running
                 //f.SetStartTimeout();
 
