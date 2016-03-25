@@ -63,11 +63,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\CategoryConfig.cs" />
     <Compile Include="Configuration\CollectorConfig.cs" />
-    <Compile Include="Configuration\Host.cs" />
+    <Compile Include="Configuration\HostConfig.cs" />
     <Compile Include="Configuration\SenderConfig.cs" />
-    <Compile Include="Configuration\ServiceSettings.cs" />
-    <Compile Include="Configuration\Template.cs" />
+    <Compile Include="Configuration\ServiceConfig.cs" />
+    <Compile Include="Configuration\TemplateConfig.cs" />
+    <Compile Include="HostModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PumpService.cs" />

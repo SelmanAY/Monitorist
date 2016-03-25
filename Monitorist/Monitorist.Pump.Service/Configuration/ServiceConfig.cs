@@ -6,49 +6,45 @@ using System.Threading.Tasks;
 
 namespace Monitorist.Pump.Service.Configuration
 {
-    class ServiceSettings
+    class ServiceConfig
     {
-        public SenderConfig SenderSettings { get; private set; }
-        public CollectorConfig CollectorSettings { get; private set; }
+        public SenderConfig SenderConfig { get; private set; }
+        public CollectorConfig CollectorConfig { get; private set; }
 
-        public Dictionary<string, Template> Templates { get; private set; }
+        public List<TemplateConfig> TemplateConfigs { get; private set; }
 
-        public List<Host> Hosts { get; set; }
+        public List<HostConfig> HostConfigs { get; set; }
 
-        private ServiceSettings()
-        {
-            this.Templates = new Dictionary<string, Template>();
-            this.Hosts = new List<Host>();
+        private ServiceConfig()
+        { 
+            this.TemplateConfigs = new List<TemplateConfig>();
+            this.HostConfigs = new List<HostConfig>();
         }
 
-        internal static ServiceSettings ParseSettings()
+        internal static ServiceConfig ParseSettings()
         {
-            var result = new ServiceSettings();
+            var result = new ServiceConfig();
 
-            result.SenderSettings = ParseSenderSettings();
-            result.CollectorSettings = ParseCollectorSettings();
-            result.Templates = ParseTemplateSettings();
-            result.Hosts = ParseHostsSettings();
+            result.SenderConfig = ParseSenderSettings();
+            result.CollectorConfig = ParseCollectorSettings();
+            result.TemplateConfigs = ParseTemplateSettings();
+            result.HostConfigs = ParseHostsSettings();
 
             return result;
         }
 
-        private static List<Host> ParseHostsSettings()
+        private static List<HostConfig> ParseHostsSettings()
         {
             var senderStr = System.IO.File.ReadAllText(string.Format(HOSTS_CONFIG_FILE, System.Environment.CurrentDirectory));
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<Host>>(senderStr);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<HostConfig>>(senderStr);
         }
 
-        private static Dictionary<string, Template> ParseTemplateSettings()
+        private static List<TemplateConfig> ParseTemplateSettings()
         {
-            var result = new Dictionary<string, Template>();
-
             var senderStr = System.IO.File.ReadAllText(string.Format(TEMPLATES_CONFIG_FILE, System.Environment.CurrentDirectory));
-            var templates = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Template>>(senderStr);
+            var templates = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TemplateConfig>>(senderStr);
 
-            templates.ForEach(t => result.Add(t.Name, t));
-
-            return result;
+            return templates;
         }
 
         private static CollectorConfig ParseCollectorSettings()

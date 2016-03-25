@@ -1,35 +1,80 @@
 ﻿[
-  {
-    "Name": "SqlServer",
-    "Poll": 3,
-    "ExcludedInstances": [ ],
-    "ExcludedCounters": [ ],
-    "IncludedInstances": [ ],
-    "IncludedCounters": [
-      "Memory",
-      "CPU"
-    ]
-  },
-  {
-    "Name": "IIS",
-    "Poll": 3,
-    "ExcludedInstances": [ ],
-    "ExcludedCounters": [
-      "Memory",
-      "CPU"
-    ],
-    "IncludedInstances": [ ],
-    "IncludedCounters": [ ]
-  },
-  {
-    "Name": "Exchange",
-    "Poll": 3,
-    "ExcludedInstances": [ ],
-    "ExcludedCounters": [ ],
-    "IncludedInstances": [
-      "Memory",
-      "CPU"
-    ],
-    "IncludedCounters": [ ]
-  }
+	{
+		/* Name of template */
+		"Name": "SqlServer",
+		"Categories": [
+			{
+				"CategoryName": "Processor",
+				/*
+					Instances are dynamically created at runtime. 
+					For rapidly changing instances like the ones in Process category (everytime you execute a process a new instance will be created) 
+					collecting them dynamically is a resourceful process and not accurate by design for composite coutners. 
+
+					this is because exclusion of collection is not supported. 
+				*/
+
+				/*
+					if IncludedInstances and/or IncludedCounters leaved emtpy or skipped all of the instances and/or counters will be collected.
+				*/
+
+				/* Instances that will be collected */
+				"IncludedInstances": [ "_Total" ],
+
+				/* Instances that will be collected. */
+				"IncludedCounters": [ "% Processor Time", "% User Time", "% Privileged Time" ]
+			},
+			{
+				"CategoryName": "Process",
+				"IncludedInstances": [ "sqlservr" ]
+				/* "IncludedCounters": [ ] */
+			},
+			{
+				/* Regex Patterns for CategoryNames could be entered with the help of IsRegexName = true property */
+				/* 
+					for named instances of sql server names of performance counter categories is changed. 
+					below pattern matches all categories of all instances installed on a server 
+				*/
+				"CategoryName": "(SQLServer|MSSQL\\$(?<InstanceName>\\w+)):.*",
+				"IsRegexName": true
+			}
+		]
+	},
+	{
+		"Name": "IIS",
+		"Categories": [
+			{
+				"CategoryName": "Web Service"
+			},
+			{
+				"CategoryName": "Web Service Cache"
+			},
+			{
+				"CategoryName": "ASP.NET"
+			},
+			{
+				"CategoryName": "ASP.NET Applications"
+			},
+			{
+				"CategoryName": ".NET CLR Exceptions",
+				"IncludedCounters": [ "# of Exceps Thrown" ]
+			}
+		]
+	},
+	{
+		"Name": "BaseCounters",
+		"Categories": [
+			{
+				"CategoryName": "Memory"
+			},
+			{
+				"CategoryName": "Processor"
+			},
+			{
+				"CategoryName": "PhysicalDisk"
+			},
+			{
+				"CategoryName": "System"
+			}
+		]
+	}
 ]
