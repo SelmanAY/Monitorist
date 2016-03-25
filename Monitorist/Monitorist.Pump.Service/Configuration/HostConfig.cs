@@ -11,10 +11,12 @@ namespace Monitorist.Pump.Service.Configuration
         public string HostName { get; set; }
         public int SampleInterval { get; set; }
         public List<string> Templates { get; set; }
+        public List<Template> Categories { get; private set; }
 
 		public HostConfig()
         {
             this.Templates = new List<string>();
+            this.Categories = new List<Template>();
         }
     }
 }

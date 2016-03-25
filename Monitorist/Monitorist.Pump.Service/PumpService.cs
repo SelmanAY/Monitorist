@@ -26,8 +26,8 @@ namespace Monitorist.Pump.Service
         public bool Start(HostControl hostControl)
         {
 			log.Info("Service Started");
-			this.Sender = CreateSender();
-			this.Collector = CreateCollector();
+            this.Sender = CreateSender();
+            this.Collector = CreateCollector();
 			this.HostData = this.ResolveHostModels();
 
 			return true;
@@ -55,7 +55,7 @@ namespace Monitorist.Pump.Service
 		/// i dont even expect to understand this method in case of a bug stems from here, so pray with for this method won't produce any bugs later.   
 		/// </remarks>
 		private HostModel CreateHostModel(HostConfig h)
-		{
+        {
 			var result = new HostModel();
 
 			result.HostName = h.HostName;
@@ -91,14 +91,14 @@ namespace Monitorist.Pump.Service
 			{
 				// check for unicity and combine includedCounters and includedinstance properties of non uniqe categories.
 				var uniqeCategories = from m in resolved join x in unicity on m.CategoryName equals x.CategoryName select m;
-			}
+        }
 
-			
+
 
 			return result;
-		}
+        }
 
-		public bool Stop(HostControl hostControl)
+        public bool Stop(HostControl hostControl)
         {
             return true;
         }

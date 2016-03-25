@@ -16,7 +16,7 @@ namespace Monitorist.Pump.Service.Configuration
         public List<HostConfig> HostConfigs { get; set; }
 
         private ServiceConfig()
-        { 
+        {
             this.TemplateConfigs = new List<TemplateConfig>();
             this.HostConfigs = new List<HostConfig>();
         }
