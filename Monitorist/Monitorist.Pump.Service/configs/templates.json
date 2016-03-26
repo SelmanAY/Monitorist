@@ -2,10 +2,10 @@
 	{
 		/* Name of template */
 		"Name": "SqlServer",
-		"Categories": [
-			{
-				"CategoryName": "Processor",
-				/*
+    "Categories": [
+      {
+        "CategoryName": "Processor",
+        /*
 					Instances are dynamically created at runtime. 
 					For rapidly changing instances like the ones in Process category (everytime you execute a process a new instance will be created) 
 					collecting them dynamically is a resourceful process and not accurate by design for composite coutners. 
@@ -13,35 +13,42 @@
 					this is because exclusion of collection is not supported. 
 				*/
 
-				/*
+        /*
 					if IncludedInstances and/or IncludedCounters leaved emtpy or skipped all of the instances and/or counters will be collected.
 				*/
 
-				/* Instances that will be collected */
-				"IncludedInstances": [ "_Total" ],
+        /* Instances that will be collected */
+        "IncludedInstances": [ "_Total" ],
 
-				/* Instances that will be collected. */
-				"IncludedCounters": [ "% Processor Time", "% User Time", "% Privileged Time" ]
-			},
-			{
-				"CategoryName": "Process",
-				"IncludedInstances": [ "sqlservr" ]
-				/* "IncludedCounters": [ ] */
-			},
-			{
-				/* Regex Patterns for CategoryNames could be entered with the help of IsRegexName = true property */
-				/* 
+        /* Instances that will be collected. */
+        "IncludedCounters": [ "% Processor Time", "% User Time", "% Privileged Time" ]
+      },
+      {
+        "CategoryName": "Process",
+        "IncludedInstances": [ "sqlservr" ]
+        /* "IncludedCounters": [ ] */
+      },
+      {
+        /* Regex Patterns for CategoryNames could be entered with the help of IsRegexName = true property */
+        /* 
 					for named instances of sql server names of performance counter categories is changed. 
 					below pattern matches all categories of all instances installed on a server 
 				*/
-				"CategoryName": "(SQLServer|MSSQL\\$(?<InstanceName>\\w+)):.*",
-				"IsRegexName": true
-			}
-		]
+        "CategoryName": "(SQLServer|MSSQL\\$(?<InstanceName>\\w+)):.*",
+        "IsRegexName": true
+      },
+      {
+        "CategoryName": ".NET CLR Exceptions",
+        "IncludedCounters": [ "# of Exceps Thrown / sec" ]
+      }
+    ]
 	},
 	{
 		"Name": "IIS",
 		"Categories": [
+      {
+        "CategoryName": "Processor"
+      },
 			{
 				"CategoryName": "Web Service"
 			},

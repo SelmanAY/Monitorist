@@ -70,12 +70,12 @@ namespace Monitorist.Pump.Service
 			
 			// resolved categories from regexnamed categies. 
 			allCategories.Where(x=>x.IsRegexName).ToList().ForEach(c => {
-				var allPerfCats = System.Diagnostics.PerformanceCounterCategory.GetCategories(h.HostName);
+				var allPerfCats = System.Diagnostics.PerformanceCounterCategory.GetCategories();
 				var mathcedCategories = from n in allPerfCats where System.Text.RegularExpressions.Regex.IsMatch(n.CategoryName, c.CategoryName) select new CategoryConfig { CategoryName = n.CategoryName, IncludedCounters = c.IncludedCounters, IncludedInstances = c.IncludedInstances, IsRegexName = false };
 
 				resolvedRegexCategories.AddRange(mathcedCategories);
 			});
-
+             
 			// combination of regexnamed categories and non regexnamed categories. 
 			var resolved = allCategories.Where(x => !x.IsRegexName).Union(resolvedRegexCategories);
 
@@ -89,13 +89,58 @@ namespace Monitorist.Pump.Service
 			}
 			else
 			{
-				// check for unicity and combine includedCounters and includedinstance properties of non uniqe categories.
-				var uniqeCategories = from m in resolved join x in unicity on m.CategoryName equals x.CategoryName select m;
-        }
+                // non duplicate categories
+                var nonDuplicates = from n in resolved join x in unicity on n.CategoryName equals x.CategoryName where x.Count == 1 select n;
 
+                // duplicate categories
+                var duplicates = new List<CategoryConfig>();
 
+                // check for unicity and combine includedCounters and includedinstance properties of non uniqe categories.
+                var duplicate2 = from x in unicity where x.Count > 1 select new { Name = x.CategoryName, Count = x.Count, Categories = from n in resolved where n.CategoryName == x.CategoryName select n };
+                duplicate2.ToList().ForEach(d => {
+                    duplicates.Add(MergeCategoryConfigs(d.Categories));
+                });
+
+                // union duplicate and non duplicate categories and create CategoryModel for all items in resultset.
+                nonDuplicates.Union(duplicates).ToList().ForEach(r => {
+                    result.Categories.Add(new CategoryModel { Name = r.CategoryName, IncludedCounters = r.IncludedCounters, IncludedInstances = r.IncludedInstances })
+                });           
+            }
 
 			return result;
+        }
+
+        private CategoryConfig MergeCategoryConfigs(IEnumerable<CategoryConfig> categories)
+        {
+            var result = new CategoryConfig();
+
+            // we are pretty sure these two are unique and these lines are safe unless we change the order of steps of algorithm in CreateHostModel method. 
+            result.CategoryName = categories.Select(n => n.CategoryName).First();
+            result.IsRegexName = categories.Select(n => n.IsRegexName).First();
+
+            if (categories.Any(c => c.IncludedCounters == null || c.IncludedCounters.Count == 0))
+            {
+                // if any of the IncludedCounters list is null or empty this means collect all the counters then result will be to collect all the counters
+                result.IncludedCounters = null;
+            }
+            else
+            {
+                // if non of the IncludedCounters list is null or empty this means the result should be unique values in the combination of all lists
+                result.IncludedCounters = categories.SelectMany(c => c.IncludedCounters).Distinct().ToList();
+            }
+
+            if (categories.Any(c => c.IncludedInstances == null || c.IncludedInstances.Count == 0))
+            {
+                // if any of the IncludedItems list is null or empty this means collect all the instances then result will be to collect all the instances
+                result.IncludedInstances = null;
+            }
+            else
+            {
+                // if non of the IncludedInstances list is null or empty this means the result should be unique values in the combination of all lists
+                result.IncludedInstances = categories.SelectMany(c => c.IncludedInstances).Distinct().ToList();
+            }
+
+            return result;
         }
 
         public bool Stop(HostControl hostControl)
