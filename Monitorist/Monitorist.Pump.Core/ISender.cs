@@ -8,7 +8,6 @@ namespace Monitorist.Pump.Core
 {
     public interface ISender
     {
-        void Send();
-        void Initialize(string senderConfiguration);
+        void Initialize(string senderConfiguration, System.Threading.Tasks.Dataflow.BufferBlock<CounterValueModel> inputBlock);
     }
 }

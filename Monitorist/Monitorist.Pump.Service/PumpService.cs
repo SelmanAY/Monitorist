@@ -8,30 +8,108 @@ using System.Collections.Generic;
 
 namespace Monitorist.Pump.Service
 {
-    class PumpService : ServiceControl
+    sealed class PumpService : ServiceControl
     {
-		public List<HostModel> HostData { get; set; }
+		private List<HostModel> Hosts { get; set; }
+		private ServiceConfig Configs { get; set; }
+		private ISender Sender { get; set; }
+		private List<ICollector> Collectors { get; set; }
+		private System.Threading.Tasks.Dataflow.BufferBlock<CounterValueModel> InputBlock { get; set; }
+		
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected ServiceConfig Configs { get; set; }
+		public System.Timers.Timer StatisticsTimer { get; set; }
 
-        protected ISender Sender { get; set; }
-        protected ICollector Collector { get; set; }
-
-        public PumpService()
+		public PumpService()
         {
-			log.Info("Service Created");
-			this.Configs = ServiceConfig.ParseSettings();
+			try
+			{
+				log.Info("Service Created");
+
+				AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+
+				this.InputBlock = new System.Threading.Tasks.Dataflow.BufferBlock<CounterValueModel>();
+
+				this.Collectors = new List<ICollector>();
+				this.Configs = ServiceConfig.ParseSettings();
+
+				this.Sender = CreateSender();
+				this.Sender.Initialize(this.Configs.SenderConfig.SenderConfiguration, this.InputBlock);
+
+				this.Hosts = this.ResolveHostModels();
+				this.Collectors = CreateCollectors();
+
+				this.StatisticsTimer = new System.Timers.Timer(1000);
+				this.StatisticsTimer.Elapsed += StatisticsTimer_Elapsed;
+				this.StatisticsTimer.Start();
+			}
+			catch (Exception ex)
+			{
+				log.Error("Exception occured on service constructor", ex);
+				throw ex;
+			}
 		}
 
-        public bool Start(HostControl hostControl)
-        {
-			log.Info("Service Started");
-            this.Sender = CreateSender();
-            this.Collector = CreateCollector();
-			this.HostData = this.ResolveHostModels();
+		private void StatisticsTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			
+		}
 
-			return true;
+		public bool Start(HostControl hostControl)
+        {
+			try
+			{
+				log.Info("Service Started");
+				this.Collectors.ForEach(c => c.Start());
+				
+				return true;
+			}
+			catch (Exception ex)
+			{
+				log.Error("Exception occured on service start", ex);
+				return false;
+			}
         }
+
+		private List<ICollector> CreateCollectors()
+		{
+			List<ICollector> result = new List<ICollector>();
+
+			ICollector collector;
+			foreach (var host in this.Hosts)
+			{
+				log.InfoFormat("Creating collector for hostname : {0}", host.HostName);
+
+				collector = CreateCollector(host);
+
+				collector.Initialize(this.Configs.CollectorConfig.CollectorConfiguration, host.HostName, host.SampleInterval, this.InputBlock);
+				host.Categories.ForEach(c => {
+					var allCounters = c.IncludedCounters == null || c.IncludedCounters.Count == 0;
+					var allInstances = c.IncludedInstances == null || c.IncludedInstances.Count == 0;
+
+					if (allCounters && allInstances)
+					{
+						collector.AddCategory(c.Name);
+					}
+					else if (allCounters && !allInstances)
+					{
+						collector.AddCategory(c.Name, c.IncludedInstances);
+					}
+					else if (!allCounters && allInstances)
+					{
+						collector.AddCategory(c.Name, c.IncludedCounters);
+					}
+					else
+					{
+						collector.AddCategory(c.Name, c.IncludedCounters, c.IncludedInstances);
+					}
+				});
+
+				result.Add(collector);
+			}
+
+			return result;
+		}
 
 		private List<HostModel> ResolveHostModels()
 		{
@@ -50,7 +128,8 @@ namespace Monitorist.Pump.Service
 		/// <remarks>
 		/// !!!! WARNING !!!!
 		/// extensive set based operations. 
-		/// since I'm a DBA i can't figure out a good and more readible algortihm to correlate many (mostly nested) lists
+		/// I can't figure out a good and more readible algortihm to correlate many (mostly nested) lists.
+		/// I can think better at set based operations then row based operations. 
 		/// i have sacrificed readibility here.
 		/// i dont even expect to understand this method in case of a bug stems from here, so pray with for this method won't produce any bugs later.   
 		/// </remarks>
@@ -70,7 +149,7 @@ namespace Monitorist.Pump.Service
 			
 			// resolved categories from regexnamed categies. 
 			allCategories.Where(x=>x.IsRegexName).ToList().ForEach(c => {
-				var allPerfCats = System.Diagnostics.PerformanceCounterCategory.GetCategories();
+				var allPerfCats = System.Diagnostics.PerformanceCounterCategory.GetCategories(h.HostName);
 				var mathcedCategories = from n in allPerfCats where System.Text.RegularExpressions.Regex.IsMatch(n.CategoryName, c.CategoryName) select new CategoryConfig { CategoryName = n.CategoryName, IncludedCounters = c.IncludedCounters, IncludedInstances = c.IncludedInstances, IsRegexName = false };
 
 				resolvedRegexCategories.AddRange(mathcedCategories);
@@ -103,7 +182,7 @@ namespace Monitorist.Pump.Service
 
                 // union duplicate and non duplicate categories and create CategoryModel for all items in resultset.
                 nonDuplicates.Union(duplicates).ToList().ForEach(r => {
-                    result.Categories.Add(new CategoryModel { Name = r.CategoryName, IncludedCounters = r.IncludedCounters, IncludedInstances = r.IncludedInstances })
+					result.Categories.Add(new CategoryModel { Name = r.CategoryName, IncludedCounters = r.IncludedCounters, IncludedInstances = r.IncludedInstances });
                 });           
             }
 
@@ -145,89 +224,115 @@ namespace Monitorist.Pump.Service
 
         public bool Stop(HostControl hostControl)
         {
+			this.Collectors.ForEach(c => c.Stop());
+
             return true;
         }
-
-
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        private System.Threading.Timer Timer { get; set; }
-
+		
         private ISender CreateSender()
         {
-            var senderType = Type.GetType(this.Configs.SenderConfig.SenderType);
-            if (senderType == null)
-            {
-                var senderDirectory = System.IO.Path.Combine(System.Environment.CurrentDirectory, "Senders\\");
-                var dlls = System.IO.Directory.GetFiles(senderDirectory, "*.dll", System.IO.SearchOption.TopDirectoryOnly);
-                var loader = new AppDomainToolkit.AssemblyLoader();
+			ISender result = CreateTypeFromLoadedAssemblies<ISender>(this.Configs.SenderConfig.SenderType);
+			if (result != null)
+			{
+				return result;
+			}
 
-                foreach (var dll in dlls)
-                {
-                    var loadedAssemblies = loader.LoadAssemblyWithReferences(AppDomainToolkit.LoadMethod.LoadBits, dll);
+			result = CreateTypeFromDynamicAssemblies<ISender>(this.Configs.SenderConfig.SenderType);
+			if (result != null)
+			{
+				return result;
+			}
 
-                    var _interface = typeof(Monitorist.Pump.Core.ISender);
-                    var type = loadedAssemblies
-                        .SelectMany(s => s.GetTypes())
-                        .Where(p => _interface.IsAssignableFrom(p) && p.IsClass == true && p.FullName.Equals(this.Configs.SenderConfig.SenderType, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-
-                    if (type != null)
-                    {
-                        senderType = type;
-                    }
-                }
-            }
-
-            if (senderType != null)
-            {
-                ISender result = Activator.CreateInstance(senderType) as ISender;
-                result.Initialize(this.Configs.SenderConfig.SenderConfiguration);
-
-                return result;
-            }
-            else
-            {
-                throw new ApplicationException(string.Format("Sender object named \"{0}\" can not be loaded. Can not continue to run.", this.Configs.SenderConfig.SenderType));
-            }
+			throw new ApplicationException(string.Format("Sender object named \"{0}\" can not be loaded. Can not continue to run.", this.Configs.SenderConfig.SenderType));
         }
 
-        private ICollector CreateCollector()
+        private ICollector CreateCollector(HostModel host)
         {
-            var senderType = Type.GetType(this.Configs.CollectorConfig.CollectorType);
-            if (senderType == null)
-            {
-                var senderDirectory = System.IO.Path.Combine(System.Environment.CurrentDirectory, "Collectors\\");
-                var dlls = System.IO.Directory.GetFiles(senderDirectory, "*.dll", System.IO.SearchOption.TopDirectoryOnly);
-                var loader = new AppDomainToolkit.AssemblyLoader();
+			ICollector result = CreateTypeFromLoadedAssemblies<ICollector>(this.Configs.CollectorConfig.CollectorType);
+			if (result != null)
+			{
+				return result;
+			}
 
-                foreach (var dll in dlls)
-                {
-                    var loadedAssemblies = loader.LoadAssemblyWithReferences(AppDomainToolkit.LoadMethod.LoadBits, dll);
-
-                    var _interface = typeof(Monitorist.Pump.Core.ICollector);
-                    var type = loadedAssemblies
-                        .SelectMany(s => s.GetTypes())
-                        .Where(p => _interface.IsAssignableFrom(p) && p.IsClass == true && p.FullName.Equals(this.Configs.CollectorConfig.CollectorType, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-
-                    if (type != null)
-                    {
-                        senderType = type;
-                    }
-                }
-            }
-
-            if (senderType != null)
-            {
-                ICollector result = Activator.CreateInstance(senderType) as ICollector;
-                result.Initialize(this.Configs.CollectorConfig.CollectorConfiguration);
-
-                return result;
-            }
-            else
-            {
-                throw new ApplicationException(string.Format("Sender object named \"{0}\" can not be loaded. Can not continue to run.", this.Configs.SenderConfig.SenderType));
-            }
+			result = CreateTypeFromDynamicAssemblies<ICollector>(this.Configs.CollectorConfig.CollectorType);
+			if (result != null)
+			{
+				return result;
+			}
+			
+            throw new ApplicationException(string.Format("Sender object named \"{0}\" can not be loaded. Can not continue to run.", this.Configs.SenderConfig.SenderType));
         }
-    }
+
+		private T CreateTypeFromDynamicAssemblies<T>(string typeName) where T : class
+		{
+			System.Type type = null;
+
+			var senderDirectory = System.IO.Path.Combine(System.Environment.CurrentDirectory, "Collectors\\");
+			var collectorsDirectory = System.IO.Path.Combine(System.Environment.CurrentDirectory, "Senders\\");
+
+			var dlls = System.IO.Directory.GetFiles(senderDirectory, "*.dll", System.IO.SearchOption.TopDirectoryOnly)
+						.Union(System.IO.Directory.GetFiles(collectorsDirectory, "*.dll", System.IO.SearchOption.TopDirectoryOnly));
+			var loader = new AppDomainToolkit.AssemblyLoader();
+
+			foreach (var dll in dlls)
+			{
+				var loadedAssemblies = loader.LoadAssemblyWithReferences(AppDomainToolkit.LoadMethod.LoadBits, dll);
+
+				var _interface = typeof(T);
+				type = loadedAssemblies
+					.SelectMany(s => s.GetTypes())
+					.Where(p => _interface.IsAssignableFrom(p) && p.IsClass == true && p.FullName.Equals(typeName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+
+				if (type != null)
+				{
+					break;
+				}
+			}
+
+			if (type != null)
+			{
+				return Activator.CreateInstance(type) as T;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		private T CreateTypeFromLoadedAssemblies<T>(string typeName) where T : class
+		{
+			var type = (from n in AppDomain.CurrentDomain.GetAssemblies()
+						from m in n.GetTypes()
+						where m.FullName.Equals(typeName, StringComparison.InvariantCultureIgnoreCase) select m).FirstOrDefault();
+
+			if (type != null)
+			{
+				return Activator.CreateInstance(type) as T;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		private System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+		{
+			var dllFileName = args.Name.Split(",".ToCharArray())[0] + ".dll";
+
+			var collectorDirectory = System.IO.Path.Combine(System.Environment.CurrentDirectory, "Collectors\\");
+			if (System.IO.File.Exists(System.IO.Path.Combine(collectorDirectory, dllFileName)))
+			{
+				return new AppDomainToolkit.AssemblyLoader().LoadAssembly(AppDomainToolkit.LoadMethod.LoadBits, System.IO.Path.Combine(collectorDirectory, dllFileName));
+			}
+
+			var senderDirectory = System.IO.Path.Combine(System.Environment.CurrentDirectory, "Senders\\");
+			if (System.IO.File.Exists(System.IO.Path.Combine(senderDirectory, dllFileName)))
+			{
+				return new AppDomainToolkit.AssemblyLoader().LoadAssembly(AppDomainToolkit.LoadMethod.LoadBits, System.IO.Path.Combine(senderDirectory, dllFileName));
+			}
+
+			return null;
+		}
+	}
 }
 

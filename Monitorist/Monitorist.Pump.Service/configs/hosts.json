@@ -1,19 +1,19 @@
 ﻿[
   {
     // asdfasdf
-    "hostName": "127.0.0.1",
+    "hostName": "localhost",
 
     // asdfasdf
     "sampleInterval": 15000,
     "templates": [ "SqlServer", "IIS" ]
   }
-  //,
-  //{
-  //  // asdfasdf
-  //  "hostName": "BTSQLSRPG01",
+  ,
+  {
+    // asdfasdf
+    "hostName": "BTSQLSRDG01",
 
-  //  // asdfasdf
-  //  "sampleInterval": 15000,
-  //  "templates": [ "SqlServer", "IIS" ]
-  //}
+    // asdfasdf
+    "sampleInterval": 15000,
+    "templates": [ "SqlServer", "IIS" ]
+  }
 ]
