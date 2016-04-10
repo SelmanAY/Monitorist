@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Monitorist by SelmanAY</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>Monitorist</h1>
+        <p>Graphite collector for Windows Performance Counters</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/SelmanAY/Monitorist" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/SelmanAY/Monitorist/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/SelmanAY/Monitorist/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>
+<a id="what-is-monitorist" class="anchor" href="#what-is-monitorist" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What is Monitorist</h1>
+
+<p>A collector for Windows Performance Counters to send collected metrics to Graphite.</p>
+
+<h1>
+<a id="why-reinventing-the-wheel" class="anchor" href="#why-reinventing-the-wheel" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why reinventing the wheel</h1>
+
+<p>Actually it is not reinventing the wheel. I examined most of the collectors sending metrics to <a href="http://graphite.wikidot.com/">Graphite</a>. Some of them are very hard to configure or some of them are collecting counters using the wrong way. So I ended up writing my own collector. </p>
+
+<h1>
+<a id="cut-the-crap-and-show-the-thing-installation" class="anchor" href="#cut-the-crap-and-show-the-thing-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cut the crap and show the thing (Installation)</h1>
+
+<h2>
+<a id="prerequisites" class="anchor" href="#prerequisites" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Prerequisites</h2>
+
+<h3>
+<a id="graphite-installation-on-ubuntu-1404-server" class="anchor" href="#graphite-installation-on-ubuntu-1404-server" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Graphite installation on Ubuntu 14.04 Server</h3>
+
+<p>A video demonstration of installation will be here soon but for now you can use this <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-graphite-on-an-ubuntu-14-04-server">Installation Tutorial</a> which is the one i have used on my development environment.</p>
+
+<h3>
+<a id="monitorist-installation" class="anchor" href="#monitorist-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Monitorist Installation</h3>
+
+<p>A downloadable zip archive will be provided soon (preferably from a continuous integration provider) but for now you can build it from source all the plugins that will be dynamically loaded on runtime will be copied to the output folder. You can xcopy the output folder and use it in production. </p>
+
+<h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuration</h2>
+
+<h3>
+<a id="collectorjson" class="anchor" href="#collectorjson" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>collector.json</h3>
+
+<h3>
+<a id="hostsjson" class="anchor" href="#hostsjson" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hosts.json</h3>
+
+<h3>
+<a id="senderjson" class="anchor" href="#senderjson" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>sender.json</h3>
+
+<h3>
+<a id="templatesjson" class="anchor" href="#templatesjson" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>templates.json</h3>
+
+<h3>
+<a id="log4netconfig" class="anchor" href="#log4netconfig" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>log4net.config</h3>
+
+<h2>
+<a id="thanks" class="anchor" href="#thanks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Thanks</h2>
+
+<p>For making me understand the nature and details of Performance Counters</p>
+
+<p>Sebastian Krysmanski for his <a href="https://manski.net/2013/11/windows-performance-counter-types/">post</a></p>
+
+<p>Javier Canillas for his <a href="http://perfmoncounterhelper.codeplex.com/">codeplex project</a></p>
+
+<p>For all the brain storming sessions about counters</p>
+
+<p><a href="https://tr.linkedin.com/in/ahmet-serdar-ay-073a133b/tr">Ahmet Serdar AY</a></p>
+
+<p><a href="https://tr.linkedin.com/in/faruk-ye%C5%9Fil-19964622/tr">Faruk YEŞİL</a></p>
+
+<p>For all goodness and flavor she put in my life</p>
+
+<p><a href="https://tr.linkedin.com/in/ba%C4%9Fnur-ay-2795783b">Bağnur AY</a>  </p>
+
+<h2>
+<a id="future-features" class="anchor" href="#future-features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Future features</h2>
+
+<ul>
+<li>Self performance counters </li>
+<li>Management Api (probably through REST service on hosted OWIN Environment)</li>
+</ul>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/SelmanAY">SelmanAY</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
