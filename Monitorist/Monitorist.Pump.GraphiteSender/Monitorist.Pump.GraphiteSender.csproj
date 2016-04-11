@@ -66,14 +66,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>SET dlls=$(TargetDir)*.dll
-SET pdbs=$(TargetDir)*.pdb 
-
-echo %25dlls%25
-echo %25pdbs%25
-
-xcopy "%25dlls%25" "$(SolutionDir)Monitorist.Pump.Service\bin\$(ConfigurationName)\Collectors\" /Y
-xcopy "%25pdbs%25" "$(SolutionDir)Monitorist.Pump.Service\bin\$(ConfigurationName)\Collectors\" /Y</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
