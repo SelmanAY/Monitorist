@@ -2,6 +2,7 @@ language: csharp
 solution: Monitorist/Monitorist.sln
 sudo: required
 before_deploy:
+    - ./permissions.sh
     - ./beforeDeploy.sh
 deploy:
   provider: releases
