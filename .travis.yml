@@ -1,7 +1,8 @@
 language: csharp
 solution: Monitorist/Monitorist.sln
+sudo: required
 before_deploy:
-    - ./build/SelmanAY/Monitorist/beforeDeploy.sh
+    - ./beforeDeploy.sh
 deploy:
   provider: releases
   api_key:
