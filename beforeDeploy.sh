@@ -1,3 +1,5 @@
+chmod +x ./
+
 mkdir ./Deploy
 cp ./Monitorist/Monitorist.Pump.Service/bin/Release/*.* ./Deploy/
 cp ./Monitorist/Monitorist.Pump.Collectors/bin/Release/*.dll ./Deploy/Collectors
