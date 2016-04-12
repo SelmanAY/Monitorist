@@ -1,11 +1,15 @@
 before_build:
   - nuget restore Monitorist\Monitorist.sln
+  
 configuration: Release
+
 artifacts: 
   - path: appVeyorBuild.zip
     name: pump 
+
 before_deploy:
   - beforeDeploy.cmd
+
 deploy:
   provider: GitHub
   auth_token:
