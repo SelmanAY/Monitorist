@@ -13,4 +13,4 @@ cp -avr ./Monitorist/Monitorist.Pump.GraphiteSender/bin/Release/*.dll ./Monitori
 
 ls -alR ./Monitorist/Deploy/*.* > ./Monitorist/Deploy/fileList.txt
 
-7z a travisBuild.zip ./Monitorist/Deploy/*.* -r
+7z a travisBuild.zip ./Monitorist/Deploy/ -r
