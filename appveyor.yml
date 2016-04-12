@@ -1,10 +1,14 @@
 before_build:
   - nuget restore Monitorist\Monitorist.sln
+configuration: Release
+verbosity: minimal
+before_deploy:
+  - beforeDeploy.cmd
 deploy:
   provider: GitHub
   auth_token:
     secure: y7ci84jqJ9Hq611qLCNByowSPepbjoZuDJd0WAVBeltnkK1GJ7x9xrQTEmEDB1yr # your encrypted token from GitHub
-  artifact: \bin\release\*.*            # upload all NuGet packages to release assets
+  artifact: \bin\release\/.*\.nupkg/            # upload all NuGet packages to release assets
   draft: false
   prerelease: false
   on:
