@@ -15,7 +15,7 @@ deploy:
   provider: releases
   api_key:
     secure: k9RexGCt2c7boS+d74KQORrZLP/UNGrEc+keBEObfX3pfSyH6GAiPYYz3sNRnh+O8nR4umWowDo+8bsA+hXRJ+9fM9P9cC6ZVG/oBT1zqYA0pHdr/gPXngAt90oz88wxWHMj/fCIKpyLgcjgnyyaoBlCS3ZbJIxCK14CAGm0TvJrfWT4D+WKJ+tC9dZGeEUZTnAfHZ4M7QYKk1bJxnOQlkiI0A8ILyZCBjYDnuJ2myVrk4GBDdU2pg9fvLf75rxJWGrqn57TACVrHNlvnlqTRJKedURNkbuvDGmTPBrNkTUpKJIiRLDz8ebwHGaANUiz2l2OWn7XfG5IhMqRbo7G5J3+k7D3cvTurh7b3uYBdIPsXgjdb+mGgSVxsj5Xf5pJFBpokbLHeiSEij6jG/K93R/qVEsjt5PprQ5oH577d9wKhfC+g/PK4EcBl2cZjjjpH4BMOchFbWz4wS5tZQxCxLyc9NPjOdF8ijVvHDj3v0AfEmtHlJgK4I0mBr8wzMqhYMQDEf93rCeVh0Xpc67YJrH78uALr17iHflFlndDII7jfHfce41+iXD2+ckoVrrFOZgR7TOTNFrm7WiLqeQsLQTA4w2wiZ9b4vP1VTyKYe3cYF7sE8KVSyspGfslAHEVF+wLUK35+0Fzzn0IWPLVjM8pCeU2Z8XNeEGB6xotlBM=
-  file: ./deploy.zip
+  file: ./travisBuild.zip
   on:
     repo: SelmanAY/Monitorist
     tags: true
