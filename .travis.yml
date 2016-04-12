@@ -4,6 +4,9 @@ solution: Monitorist/Monitorist.sln
 
 sudo: required
 
+before_install:
+	- sudo apt-get install p7zip-full
+
 before_script:
     - chmod +x ./beforeDeploy.sh
 
