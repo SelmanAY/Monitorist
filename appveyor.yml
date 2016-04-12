@@ -1,7 +1,6 @@
 before_build:
   - nuget restore Monitorist\Monitorist.sln
 configuration: Release
-verbosity: minimal
 before_deploy:
   - beforeDeploy.cmd
 deploy:
