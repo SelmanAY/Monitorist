@@ -1,4 +1,4 @@
-# What is Monitorist [![Build Status](https://travis-ci.org/SelmanAY/Monitorist.svg?branch=master)](https://travis-ci.org/SelmanAY/Monitorist)[![Build status](https://ci.appveyor.com/api/projects/status/kgty818wfkk0tfn4?svg=true)](https://ci.appveyor.com/project/SelmanAY/monitorist)
+# What is Monitorist [![Build Status](https://travis-ci.org/SelmanAY/Monitorist.svg?branch=master)](https://travis-ci.org/SelmanAY/Monitorist) [![Build status](https://ci.appveyor.com/api/projects/status/kgty818wfkk0tfn4?svg=true)](https://ci.appveyor.com/project/SelmanAY/monitorist)
 
 A collector for Windows Performance Counters to send collected metrics to Graphite.
 
