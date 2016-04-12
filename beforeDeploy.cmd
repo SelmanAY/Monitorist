@@ -8,4 +8,4 @@ xcopy Monitorist\Monitorist.Pump.Service\Senders\*.* Monitorist\Deploy\Senders\ 
 xcopy Monitorist\Monitorist.Pump.Collectors\bin\Release\*.dll Monitorist\Deploy\Collectors
 xcopy Monitorist\Monitorist.Pump.GraphiteSender\bin\Release\*.dll Monitorist\Deploy\Senders
 
-7z a Monitorist\Deploy\appVeyorBuild.zip Monitorist\Deploy\*.* -r
+7z a C:\projects\monitorist\appVeyorBuild.zip Monitorist\Deploy\*.* -r
