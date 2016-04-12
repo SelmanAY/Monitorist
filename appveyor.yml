@@ -7,7 +7,7 @@ deploy:
   provider: GitHub
   auth_token:
     secure: CqWatOZAITE7uTenY58ol4QEap/qkCiI6V1TiJnpW4pLPucOJrjw+QPJY5/JLUZ/ # your encrypted token from GitHub
-  artifact: appVeyorBuild.zip            # upload all NuGet packages to release assets
+  artifact: Monitorist\Deploy\appVeyorBuild.zip            # upload all NuGet packages to release assets
   draft: false
   prerelease: false
   on:
