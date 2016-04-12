@@ -7,7 +7,7 @@ artifacts:
   - path: appVeyorBuild.zip
     name: pump 
 
-before_deploy:
+before_package:
   - beforeDeploy.cmd
 
 deploy:
