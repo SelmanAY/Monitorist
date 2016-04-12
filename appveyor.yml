@@ -1,7 +1,6 @@
 before_build:
   - nuget restore Monitorist\Monitorist.sln
 deploy:
-  release: myproduct-v$(appveyor_build_version)
   provider: GitHub
   auth_token:
     secure: y7ci84jqJ9Hq611qLCNByowSPepbjoZuDJd0WAVBeltnkK1GJ7x9xrQTEmEDB1yr # your encrypted token from GitHub
