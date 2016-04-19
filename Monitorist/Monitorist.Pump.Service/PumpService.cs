@@ -30,18 +30,10 @@ namespace Monitorist.Pump.Service
 
 				this.InputBlock = new System.Threading.Tasks.Dataflow.BufferBlock<CounterValueModel>();
 
-				this.Collectors = new List<ICollector>();
-				this.Configs = ServiceConfig.ParseSettings();
-
-				this.Sender = CreateSender();
-				this.Sender.Initialize(this.Configs.SenderConfig.SenderConfiguration, this.InputBlock);
-
-				this.Hosts = this.ResolveHostModels();
-				this.Collectors = CreateCollectors();
-
 				this.StatisticsTimer = new System.Timers.Timer(1000);
 				this.StatisticsTimer.Elapsed += StatisticsTimer_Elapsed;
 				this.StatisticsTimer.Start();
+
 			}
 			catch (Exception ex)
 			{
@@ -60,7 +52,18 @@ namespace Monitorist.Pump.Service
 			try
 			{
 				log.Info("Service Started");
-				this.Collectors.ForEach(c => c.Start());
+                hostControl.RequestAdditionalTime(TimeSpan.FromSeconds(60));
+
+                this.Collectors = new List<ICollector>();
+                this.Configs = ServiceConfig.ParseSettings();
+
+                this.Sender = CreateSender();
+                this.Sender.Initialize(this.Configs.SenderConfig.SenderConfiguration, this.InputBlock);
+
+                this.Hosts = this.ResolveHostModels();
+                this.Collectors = CreateCollectors();
+                
+                this.Collectors.ForEach(c => c.Start());
 				
 				return true;
 			}

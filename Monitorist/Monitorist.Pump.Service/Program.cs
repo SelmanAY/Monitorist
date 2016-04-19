@@ -16,26 +16,23 @@ namespace Monitorist.Pump.Service
                 f.SetDisplayName("Monitorist Pump");
                 f.SetDescription("Pumps the metrics collectors");
 
+                f.SetStartTimeout(TimeSpan.FromSeconds(60));
+
                 f.UseLog4Net(".\\configs\\log4net.config", true);
 
                 // can be useful for service cleanup since we will use win32 apis and disposables heavily.
                 f.EnableShutdown();
                 f.EnablePauseAndContinue();
 
-                f.RunAsNetworkService();
-                // f.RunAsPrompt();
+                // f.RunAsNetworkService();
+                f.RunAsPrompt();
 
-                f.StartAutomaticallyDelayed();
+                f.StartAutomatically();
 
                 f.EnableServiceRecovery(src => {
-                    src.RestartService(0);
+                    src.RestartService(1);
                 });
-
-                // can be helpful if can not reduce time to get up and running
-                //f.SetStartTimeout();
-
-                f.SetStartTimeout(TimeSpan.FromSeconds(120));
-
+                
                 f.AfterInstall(hs => {
                     // install counterss
                 });
