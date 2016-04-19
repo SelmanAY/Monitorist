@@ -30,9 +30,11 @@ namespace Monitorist.Pump.Service
                 f.EnableServiceRecovery(src => {
                     src.RestartService(0);
                 });
-                
+
                 // can be helpful if can not reduce time to get up and running
                 //f.SetStartTimeout();
+
+                f.SetStartTimeout(TimeSpan.FromSeconds(120));
 
                 f.AfterInstall(hs => {
                     // install counterss
